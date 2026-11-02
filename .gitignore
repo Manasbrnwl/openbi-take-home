@@ -4,3 +4,7 @@ __pycache__/
 warehouse/
 .pytest_cache/
 .env
+.duet/
+OpenBI_Role_Brief.pdf
+START_HERE.txt
+OpenBI_Take_Home_Candidate_Brief.md

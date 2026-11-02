@@ -1,7 +1,7 @@
 # CLAUDE.md — agent context for this repository
 
 Northbeam ATS analytics: medallion pipeline (DuckDB) → Gold star schema → one metric layer →
-FastAPI → thin frontend. Take-home for OpenBI. Read `OpenBI_Take_Home_Candidate_Brief.md` and
+FastAPI → thin frontend. Take-home for OpenBI. Read the candidate brief (provided by OpenBI, kept out of this public repo) and
 `docs/CONTRACT.md` before changing anything.
 
 ## Non-negotiables
