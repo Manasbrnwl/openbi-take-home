@@ -1,0 +1,14 @@
+# Render Blueprint — free web service, Docker runtime. No paid resources.
+services:
+  - type: web
+    name: northbeam-ats-analytics
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: NB_ENV
+        value: prod
+      - key: NB_JWT_SECRET
+        generateValue: true      # Render generates a random secret; never in git
+      - key: NB_DEMO_PASSWORD
+        sync: false              # set by hand in the Render dashboard
