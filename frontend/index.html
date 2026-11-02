@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Northbeam Hiring</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <main id="login-view" class="login" hidden>
+    <form id="login-form" class="login-card" autocomplete="on">
+      <h1>Northbeam hiring</h1>
+      <p class="muted">Sign in to see the requisitions you're responsible for.</p>
+      <label>Work email
+        <input name="email" type="email" required autocomplete="username" autofocus>
+      </label>
+      <label>Password
+        <input name="password" type="password" required autocomplete="current-password">
+      </label>
+      <p id="login-error" class="error" role="alert" hidden></p>
+      <button type="submit" class="primary">Sign in</button>
+      <div class="demo">
+        <p class="muted">Demo accounts (password from <code>NB_DEMO_PASSWORD</code>):</p>
+        <ul>
+          <li><button type="button" class="link" data-email="simran.jain@northbeam.example">simran.jain</button> admin</li>
+          <li><button type="button" class="link" data-email="uday.varma@northbeam.example">uday.varma</button> hiring manager</li>
+          <li><button type="button" class="link" data-email="naveen.malhotra@northbeam.example">naveen.malhotra</button> recruiter</li>
+        </ul>
+      </div>
+    </form>
+  </main>
+
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <span class="wordmark">Northbeam hiring</span>
+      <span class="who"><span id="me-name"></span> <span id="me-role" class="muted"></span></span>
+      <button id="logout" type="button" class="ghost">Sign out</button>
+    </header>
+
+    <main class="canvas">
+      <div class="title-row">
+        <h1>Hiring overview</h1>
+        <p id="scope-line" class="muted"></p>
+      </div>
+
+      <section aria-labelledby="metrics-h">
+        <h2 id="metrics-h">Metrics</h2>
+        <div id="metrics" class="metric-grid"></div>
+      </section>
+
+      <section aria-labelledby="apps-h">
+        <div class="section-head">
+          <h2 id="apps-h">Applications</h2>
+          <label class="inline">Stage
+            <select id="stage">
+              <option value="">All stages</option>
+              <option>Screen</option>
+              <option>Interview</option>
+              <option>Offer</option>
+              <option>Hired</option>
+              <option>Rejected</option>
+              <option>Withdrawn</option>
+            </select>
+          </label>
+        </div>
+        <div class="panel table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Application</th><th>Candidate</th><th>Contact</th><th>Requisition</th>
+                <th>Stage</th><th class="num">Applied</th>
+              </tr>
+            </thead>
+            <tbody id="apps-body"></tbody>
+          </table>
+          <p id="apps-empty" class="empty" hidden>No applications in this view.</p>
+          <p id="apps-error" class="error" hidden></p>
+        </div>
+        <div class="pager">
+          <span id="apps-range" class="muted num"></span>
+          <button id="prev" type="button" class="ghost">Previous</button>
+          <button id="next" type="button" class="ghost">Next</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
