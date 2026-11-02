@@ -106,7 +106,7 @@ Render builds it from the Dockerfile.
 - **PII:** encrypt at rest, mask phone and email unless the role needs them, keep an audit log
   of who viewed which candidate, and set a retention policy (DPDP Act 2023 for Indian
   candidates).
-- **Ops:** structured request logs without PII, rate limiting on `/auth/login`, an uptime alert,
+- **Ops:** login lockout is in-process (SR-1), so move it to a shared store before scaling past one instance; structured request logs without PII; an uptime alert;
   and dependency pinning plus scanning in CI. The free tier also sleeps when idle, so the first
   request is slow.
 - **SCD2 on requisitions:** if a requisition changes hiring manager, access should follow the
@@ -121,7 +121,7 @@ Render builds it from the Dockerfile.
   key-map first.
 - **CRUD, visual design, and Power BI / Fabric semantic model.** Not scored. The metric layer is
   shaped so its definitions map one-to-one onto DAX measures.
-- **Extension.** See [docs/ESTIMATES.md](docs/ESTIMATES.md) for whether time allowed one.
+- **Extension:** C, the security review, was done: [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md) covers four findings with reproductions, fixes and tests. API docs (`/docs`) are served only when `NB_ENV=dev`.
 
 ## Agent artifacts
 
