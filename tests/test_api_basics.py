@@ -44,3 +44,15 @@ def test_metric_result_returned_unchanged(client):  # noqa: F811
 def test_stage_filter(client):  # noqa: F811
     r = client.get("/applications", headers=login(client, "U013"), params={"stage": "Applied"}).json()
     assert r["total"] == 4 and {a["current_stage"] for a in r["items"]} == {"Applied"}
+
+
+def test_healthz_is_public_and_returns_no_data(client):  # noqa: F811
+    r = client.get("/healthz")
+    assert r.status_code == 200 and r.json() == {"status": "ok"}
+
+
+def test_frontend_served_with_csp(client):  # noqa: F811
+    r = client.get("/")
+    assert r.status_code == 200 and "app.js" in r.text
+    assert "default-src 'self'" in r.headers["content-security-policy"]
+    assert client.get("/static/app.js").status_code == 200

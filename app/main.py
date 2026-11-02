@@ -69,6 +69,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(auth_router)
 
+    @app.get("/healthz", include_in_schema=False)
+    def healthz(con=Depends(get_con)):
+        # Unauthenticated liveness check for the host; proves the warehouse is open, returns no data.
+        con.execute("SELECT 1").fetchone()
+        return {"status": "ok"}
+
     @app.get("/me")
     def me(principal: Principal = Depends(get_principal), con=Depends(get_con)):
         where, params = principal.scope.sql_filter("req_key")
