@@ -82,7 +82,8 @@ Unknown user, missing `sub` and garbage tokens still fail at the user lookup, as
 
 ## Known limits (deliberately out of scope for a take-home)
 
-- No login rate limiting or lockout.
+- Login lockout is per email and in memory (5 failures / 15 min; see SECURITY_REVIEW.md SR-1).
+  A multi-instance deploy needs a shared store.
 - No token revocation before `exp`. Role and scope are re-read on every request, so the window is
   "still authenticated", not "still privileged".
 - Every demo user shares one password from `NB_DEMO_PASSWORD`. It is a demo credential store, not

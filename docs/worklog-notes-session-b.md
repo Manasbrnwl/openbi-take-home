@@ -52,10 +52,29 @@
 ## Not verified
 
 - Light colour scheme: the QA browser rendered dark mode. Light tokens exist but I didn't screenshot them.
-- No rate limiting on login (see ACCESS_CONTROL.md, "Known limits").
 
 ## For session A
 
 - The app holds a read-only DuckDB handle, so stop uvicorn before re-running `pipeline.run` on Windows.
 - Breakdown columns have no units (e.g. offer acceptance `rate` prints `52`, not `52%`). If you want
   units there, a per-column unit map in the result would let the frontend label them without guessing.
+
+## Extension C: security review (docs/SECURITY_REVIEW.md)
+
+- Four findings, each reproduced by a probe, then a test written failing first, then the fix:
+  SR-1 unlimited login guessing (High), SR-2 over-long password returns 500 and can match by
+  prefix on bcrypt 4.x (Medium), SR-3 authenticated inputs that crash the server and error text
+  that names internals (Low), SR-4 public OpenAPI/docs (Low).
+  16 of 18 new tests failed before the fixes; all pass after. Full suite: 85.
+- Ruled out with evidence: SQL injection through metric params (all bound), `**params` overriding
+  scope, login timing difference (0.248 vs 0.240s), PII in metric breakdowns (0 of 560
+  candidates' values found).
+- **Mistake caught:** my first SR-2 fix capped the password at 1,024 characters with Pydantic. The
+  10,000-byte test then returned 422 instead of 401, and FastAPI's 422 body echoes the submitted
+  input, so the fix would have sent the password back in the response. I replaced it with the
+  length check inside `verify` and verified the password is not echoed.
+- **Mistake caught:** my original `Credentials.verify` comment said bcrypt ran "known email or not"
+  for equal timing, but I had never checked what bcrypt does above 72 bytes. On bcrypt 4.x it
+  truncates, and `requirements.txt` still allows 4.x. I've recommended pinning `bcrypt>=5` to
+  session A, which owns requirements.
+- Not done: `pip-audit` (not installed; offline).
