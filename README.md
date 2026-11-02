@@ -34,7 +34,7 @@ Demo logins (all from `users.json`):
 
 | Who | Email | Sees |
 |---|---|---|
-| Admin | see `gold.dim_user` where role = admin (U013, U014) | everything, including orphans |
+| Admin | `simran.jain@northbeam.example` (U013) | everything, including orphans |
 | Hiring manager (Engineering) | `uday.varma@northbeam.example` (U005) | only requisitions where they are HM |
 | Recruiter | `naveen.malhotra@northbeam.example` (U001) | only requisitions they own |
 
