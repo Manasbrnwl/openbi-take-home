@@ -4,7 +4,10 @@ OpenBI take-home (JD-2026-001). A raw ATS export becomes a DuckDB medallion ware
 Silver → Gold star schema), one metric layer, and a FastAPI + thin frontend with row-level
 access control.
 
-**Deployed:** _URL — see [Deployment](#deployment)_
+**Deployed:** https://northbeam-ats-analytics.onrender.com (Render free tier; the first request
+after idle can take about 50s while it wakes). Log in with any email from the demo-logins table
+below. The password was sent with the submission email; it is deliberately not in this public
+repo.
 **All five control totals reproduce** → [docs/RECONCILIATION.md](docs/RECONCILIATION.md)
 
 | Control | Expected | Gold |
