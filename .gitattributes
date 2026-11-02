@@ -1,3 +1,5 @@
 * text=auto eol=lf
 *.xlsx binary
 *.pdf binary
+# raw extract is kept byte-for-byte as received (Bronze fingerprints it)
+northbeam_ats_pack/** -text
