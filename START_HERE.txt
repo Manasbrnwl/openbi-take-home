@@ -1,0 +1,14 @@
+OPENBI — AI & ANALYTICS ENGINEER
+Take-home exercise
+
+  OpenBI_Take_Home_Candidate_Brief.md   Read this first. The exercise.
+  northbeam_ats_pack/                   The data. Start with its README.txt
+                                        and CONTROL_TOTALS.txt.
+  OpenBI_Role_Brief.pdf                 The role itself, for reference.
+
+Time cap: 16 hours, across no more than two days.
+
+Nothing here requires a paid licence or a cloud bill. If you hit a cost
+wall at any point, email harry@openbi.ai before you spend anything.
+
+Submit a repository link to harry@openbi.ai.
