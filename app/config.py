@@ -22,6 +22,8 @@ class Settings:
     demo_password: str
     token_ttl_minutes: int = 60
     bcrypt_rounds: int = 12
+    login_max_failures: int = 5
+    login_window_seconds: int = 900
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -50,4 +52,6 @@ class Settings:
             jwt_secret=secret,
             demo_password=password,
             bcrypt_rounds=int(os.environ.get("NB_BCRYPT_ROUNDS", "12")),
+            login_max_failures=int(os.environ.get("NB_LOGIN_MAX_FAILURES", "5")),
+            login_window_seconds=int(os.environ.get("NB_LOGIN_WINDOW_SECONDS", "900")),
         )

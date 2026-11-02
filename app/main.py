@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 import metrics
-from app.auth import Credentials
+from app.auth import Credentials, LoginThrottle
 from app.auth import router as auth_router
 from app.config import Settings
 from app.db import get_con, open_warehouse, rows_as_dicts
@@ -21,6 +21,8 @@ from metrics import Scope
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 MAX_PAGE_SIZE = 100
+# Far above any real page count; stops OFFSET overflowing DuckDB's BIGINT (SR-3).
+MAX_PAGE = 100_000
 
 # Query params that must never reach a metric function, whatever the metric accepts.
 # Scope comes from the token only; these names are dropped so nobody can try to smuggle one in.
@@ -51,8 +53,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         finally:
             con.close()
 
-    app = FastAPI(title="Northbeam ATS analytics", lifespan=lifespan)
+    # The interactive docs and schema are a dev convenience, not something to publish (SR-4).
+    docs = settings.env == "dev"
+    app = FastAPI(
+        title="Northbeam ATS analytics", lifespan=lifespan,
+        docs_url="/docs" if docs else None, redoc_url="/redoc" if docs else None,
+        openapi_url="/openapi.json" if docs else None,
+    )
     app.state.settings = settings
+    app.state.login_throttle = LoginThrottle(settings.login_max_failures, settings.login_window_seconds)
 
     @app.middleware("http")
     async def security_headers(request: Request, call_next):
@@ -101,8 +110,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         params = {k: v for k, v in request.query_params.items() if k not in RESERVED_METRIC_PARAMS}
         try:
             return metrics.compute(con, name, scope, **params)  # returned unchanged
-        except (TypeError, ValueError) as e:
-            raise HTTPException(400, f"bad parameters for {name}: {e}") from None
+        except (TypeError, ValueError, OverflowError):
+            # Generic message: the exception text names internal functions (SR-3).
+            raise HTTPException(400, f"invalid parameters for metric {name}") from None
 
     @app.get("/requisitions")
     def list_requisitions(scope: Scope = Depends(get_scope), con=Depends(get_con)):
@@ -134,7 +144,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/applications")
     def list_applications(
         stage: str | None = None,
-        page: int = Query(1, ge=1),
+        page: int = Query(1, ge=1, le=MAX_PAGE),
         page_size: int = Query(25, ge=1, le=MAX_PAGE_SIZE),
         scope: Scope = Depends(get_scope),
         con=Depends(get_con),
